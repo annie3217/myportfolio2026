@@ -307,6 +307,9 @@ p {
   object-fit: cover;
   filter: grayscale(100%);
   mix-blend-mode: multiply;
+   object-fit: cover;
+  object-position: center top;
+   
 }
 
 .image-caption {
@@ -386,6 +389,8 @@ p {
   object-fit: cover;
   filter: grayscale(100%);
   mix-blend-mode: multiply;
+   object-fit: cover;
+  object-position: center top;
 }
 
 .about-text p {
