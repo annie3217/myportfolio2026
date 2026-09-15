@@ -47,6 +47,7 @@ if (menuToggle && navMenu) {
 
 // =========================================
 // PORTFOLIO FILTERS
+// SUPPORTS MULTIPLE CATEGORIES
 // =========================================
 
 const portfolioFilters = document.querySelectorAll(
@@ -62,55 +63,100 @@ const portfolioCategories = document.querySelectorAll(
 );
 
 
-if (
-  portfolioFilters.length &&
-  projectCards.length
-) {
+if (portfolioFilters.length && projectCards.length) {
 
   portfolioFilters.forEach((filter) => {
 
     filter.addEventListener("click", () => {
 
-      // Remove active state from all filters
+      // -----------------------------------------
+      // ACTIVE FILTER BUTTON
+      // -----------------------------------------
 
       portfolioFilters.forEach((button) => {
+
         button.classList.remove("active");
-        button.setAttribute("aria-pressed", "false");
+
+        button.setAttribute(
+          "aria-pressed",
+          "false"
+        );
+
       });
 
 
-      // Activate selected filter
-
       filter.classList.add("active");
 
-      filter.setAttribute("aria-pressed", "true");
+      filter.setAttribute(
+        "aria-pressed",
+        "true"
+      );
 
 
-      const selectedFilter = filter.dataset.filter;
+      // -----------------------------------------
+      // GET SELECTED FILTER
+      // -----------------------------------------
+
+      const selectedFilter =
+        filter.dataset.filter.toLowerCase();
 
 
-      // Filter project cards
+      // -----------------------------------------
+      // FILTER PROJECTS
+      // -----------------------------------------
 
       projectCards.forEach((card) => {
 
-        const projectCategory =
-          card.dataset.category || "";
+        // Get all categories from data-category
+        //
+        // Example:
+        // data-category="reporting systems"
+        //
+        // becomes:
+        // ["reporting", "systems"]
+
+        const categories =
+          (card.dataset.category || "")
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+        // Show everything when "all" is selected
 
         const shouldShow =
           selectedFilter === "all" ||
-          projectCategory === selectedFilter;
+          categories.includes(selectedFilter);
 
+
+        // -----------------------------------------
+        // SHOW PROJECT
+        // -----------------------------------------
 
         if (shouldShow) {
 
-          card.classList.remove("filter-hide");
           card.classList.remove("hidden");
 
-        } else {
+          // Small delay allows the CSS
+          // transition to animate smoothly
+
+          requestAnimationFrame(() => {
+            card.classList.remove("filter-hide");
+          });
+
+        }
+
+
+        // -----------------------------------------
+        // HIDE PROJECT
+        // -----------------------------------------
+
+        else {
 
           card.classList.add("filter-hide");
 
-          // Wait for fade animation before hiding
+          // Wait for the fade/scale animation
+          // before removing it from layout
 
           setTimeout(() => {
 
@@ -125,13 +171,15 @@ if (
       });
 
 
-      // Hide category headings when none
-      // of their projects are visible
+      // -----------------------------------------
+      // HIDE EMPTY PORTFOLIO CATEGORIES
+      // -----------------------------------------
 
       portfolioCategories.forEach((category) => {
 
         const categoryProjects =
           category.querySelectorAll(".project-card");
+
 
         const hasVisibleProject =
           Array.from(categoryProjects).some(
@@ -143,11 +191,15 @@ if (
 
         if (hasVisibleProject) {
 
-          category.classList.remove("category-hidden");
+          category.classList.remove(
+            "category-hidden"
+          );
 
         } else {
 
-          category.classList.add("category-hidden");
+          category.classList.add(
+            "category-hidden"
+          );
 
         }
 
@@ -173,21 +225,29 @@ const caseStudyModals = document.querySelectorAll(
 );
 
 
+// -----------------------------------------
+// OPEN MODAL
+// -----------------------------------------
+
 function openCaseStudy(modal) {
 
   if (!modal) return;
 
   modal.classList.add("active");
 
+  modal.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
   document.body.style.overflow = "hidden";
-
-
-  // Accessibility
-
-  modal.setAttribute("aria-hidden", "false");
 
 }
 
+
+// -----------------------------------------
+// CLOSE MODAL
+// -----------------------------------------
 
 function closeCaseStudy(modal) {
 
@@ -195,14 +255,19 @@ function closeCaseStudy(modal) {
 
   modal.classList.remove("active");
 
-  document.body.style.overflow = "";
+  modal.setAttribute(
+    "aria-hidden",
+    "true"
+  );
 
-  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
 
 }
 
 
-// Open modal
+// -----------------------------------------
+// CASE STUDY BUTTONS
+// -----------------------------------------
 
 caseStudyButtons.forEach((button) => {
 
@@ -216,7 +281,15 @@ caseStudyButtons.forEach((button) => {
 
 
     if (modal) {
+
       openCaseStudy(modal);
+
+    } else {
+
+      console.warn(
+        `Case study modal "${modalId}" was not found.`
+      );
+
     }
 
   });
@@ -224,100 +297,119 @@ caseStudyButtons.forEach((button) => {
 });
 
 
-// Close modal using close button
+// -----------------------------------------
+// CLOSE BUTTON + OVERLAY
+// -----------------------------------------
 
 caseStudyModals.forEach((modal) => {
 
   const closeButton =
     modal.querySelector(".case-study-close");
 
+
   if (closeButton) {
 
-    closeButton.addEventListener("click", () => {
-      closeCaseStudy(modal);
-    });
+    closeButton.addEventListener(
+      "click",
+      () => {
+        closeCaseStudy(modal);
+      }
+    );
 
   }
 
-
-  // Close when clicking dark overlay
 
   const overlay =
     modal.querySelector(".case-study-overlay");
 
+
   if (overlay) {
 
-    overlay.addEventListener("click", () => {
-      closeCaseStudy(modal);
-    });
-
-  }
-
-});
-
-
-// Close modal with ESC key
-
-document.addEventListener("keydown", (event) => {
-
-  if (event.key !== "Escape") return;
-
-
-  const activeModal =
-    document.querySelector(
-      ".case-study-modal.active"
+    overlay.addEventListener(
+      "click",
+      () => {
+        closeCaseStudy(modal);
+      }
     );
 
-
-  if (activeModal) {
-    closeCaseStudy(activeModal);
   }
 
 });
+
+
+// -----------------------------------------
+// CLOSE MODAL WITH ESC KEY
+// -----------------------------------------
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+
+    if (event.key !== "Escape") return;
+
+
+    const activeModal =
+      document.querySelector(
+        ".case-study-modal.active"
+      );
+
+
+    if (activeModal) {
+
+      closeCaseStudy(activeModal);
+
+    }
+
+  }
+);
 
 
 // =========================================
 // SCROLL REVEAL ANIMATION
 // =========================================
 
-const animatedElements = document.querySelectorAll(
-  ".section-heading, " +
-  ".service-card, " +
-  ".project-card, " +
-  ".skill-column, " +
-  ".timeline-item, " +
-  ".education-card"
-);
+const animatedElements =
+  document.querySelectorAll(
+    ".section-heading, " +
+    ".service-card, " +
+    ".project-card, " +
+    ".skill-column, " +
+    ".timeline-item, " +
+    ".education-card"
+  );
 
 
 if ("IntersectionObserver" in window) {
 
-  const observer = new IntersectionObserver(
+  const observer =
+    new IntersectionObserver(
 
-    (entries, observer) => {
+      (entries, observer) => {
 
-      entries.forEach((entry) => {
+        entries.forEach((entry) => {
 
-        if (entry.isIntersecting) {
+          if (entry.isIntersecting) {
 
-          entry.target.classList.add(
-            "reveal",
-            "visible"
-          );
+            entry.target.classList.add(
+              "reveal",
+              "visible"
+            );
 
-          observer.unobserve(entry.target);
+            observer.unobserve(
+              entry.target
+            );
 
-        }
+          }
 
-      });
+        });
 
-    },
+      },
 
-    {
-      threshold: 0.12
-    }
+      {
+        threshold: 0.12
+      }
 
-  );
+    );
 
 
   animatedElements.forEach((element) => {
