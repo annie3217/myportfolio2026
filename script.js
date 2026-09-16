@@ -63,6 +63,101 @@ const portfolioCategories = document.querySelectorAll(
 );
 
 
+// -----------------------------------------
+// UPDATE PORTFOLIO
+// -----------------------------------------
+
+function updatePortfolio(selectedFilter) {
+
+  portfolioCategories.forEach((category) => {
+
+    const categoryProjects =
+      category.querySelectorAll(".project-card");
+
+    let hasVisibleProject = false;
+
+
+    categoryProjects.forEach((card) => {
+
+      // Get all categories from data-category
+      //
+      // Example:
+      // data-category="reporting systems"
+      //
+      // becomes:
+      // ["reporting", "systems"]
+
+      const categories =
+        (card.dataset.category || "")
+          .toLowerCase()
+          .split(/\s+/)
+          .filter(Boolean);
+
+
+      // Show everything when "all" is selected
+      // Otherwise check if the selected filter
+      // exists inside the card's categories
+
+      const shouldShow =
+        selectedFilter === "all" ||
+        categories.includes(selectedFilter);
+
+
+      // -----------------------------------------
+      // SHOW PROJECT
+      // -----------------------------------------
+
+      if (shouldShow) {
+
+        card.classList.remove("hidden");
+        card.classList.remove("filter-hide");
+
+        hasVisibleProject = true;
+
+      }
+
+
+      // -----------------------------------------
+      // HIDE PROJECT
+      // -----------------------------------------
+
+      else {
+
+        card.classList.add("filter-hide");
+        card.classList.add("hidden");
+
+      }
+
+    });
+
+
+    // -----------------------------------------
+    // SHOW / HIDE PORTFOLIO CATEGORY
+    // -----------------------------------------
+
+    if (hasVisibleProject) {
+
+      category.classList.remove(
+        "category-hidden"
+      );
+
+    } else {
+
+      category.classList.add(
+        "category-hidden"
+      );
+
+    }
+
+  });
+
+}
+
+
+// -----------------------------------------
+// PORTFOLIO FILTER BUTTONS
+// -----------------------------------------
+
 if (portfolioFilters.length && projectCards.length) {
 
   portfolioFilters.forEach((filter) => {
@@ -75,22 +170,20 @@ if (portfolioFilters.length && projectCards.length) {
 
       portfolioFilters.forEach((button) => {
 
-        button.classList.remove("active");
+        const isActive =
+          button === filter;
+
+        button.classList.toggle(
+          "active",
+          isActive
+        );
 
         button.setAttribute(
           "aria-pressed",
-          "false"
+          String(isActive)
         );
 
       });
-
-
-      filter.classList.add("active");
-
-      filter.setAttribute(
-        "aria-pressed",
-        "true"
-      );
 
 
       // -----------------------------------------
@@ -98,116 +191,28 @@ if (portfolioFilters.length && projectCards.length) {
       // -----------------------------------------
 
       const selectedFilter =
-        filter.dataset.filter.toLowerCase();
+        (filter.dataset.filter || "all")
+          .toLowerCase();
 
 
       // -----------------------------------------
-      // FILTER PROJECTS
+      // UPDATE PORTFOLIO
       // -----------------------------------------
 
-      projectCards.forEach((card) => {
-
-        // Get all categories from data-category
-        //
-        // Example:
-        // data-category="reporting systems"
-        //
-        // becomes:
-        // ["reporting", "systems"]
-
-        const categories =
-          (card.dataset.category || "")
-            .toLowerCase()
-            .split(/\s+/)
-            .filter(Boolean);
-
-
-        // Show everything when "all" is selected
-
-        const shouldShow =
-          selectedFilter === "all" ||
-          categories.includes(selectedFilter);
-
-
-        // -----------------------------------------
-        // SHOW PROJECT
-        // -----------------------------------------
-
-        if (shouldShow) {
-
-          card.classList.remove("hidden");
-
-          // Small delay allows the CSS
-          // transition to animate smoothly
-
-          requestAnimationFrame(() => {
-            card.classList.remove("filter-hide");
-          });
-
-        }
-
-
-        // -----------------------------------------
-        // HIDE PROJECT
-        // -----------------------------------------
-
-        else {
-
-          card.classList.add("filter-hide");
-
-          // Wait for the fade/scale animation
-          // before removing it from layout
-
-          setTimeout(() => {
-
-            if (card.classList.contains("filter-hide")) {
-              card.classList.add("hidden");
-            }
-
-          }, 350);
-
-        }
-
-      });
-
-
-      // -----------------------------------------
-      // HIDE EMPTY PORTFOLIO CATEGORIES
-      // -----------------------------------------
-
-      portfolioCategories.forEach((category) => {
-
-        const categoryProjects =
-          category.querySelectorAll(".project-card");
-
-
-        const hasVisibleProject =
-          Array.from(categoryProjects).some(
-            (card) =>
-              !card.classList.contains("hidden") &&
-              !card.classList.contains("filter-hide")
-          );
-
-
-        if (hasVisibleProject) {
-
-          category.classList.remove(
-            "category-hidden"
-          );
-
-        } else {
-
-          category.classList.add(
-            "category-hidden"
-          );
-
-        }
-
-      });
+      updatePortfolio(
+        selectedFilter
+      );
 
     });
 
   });
+
+
+  // -----------------------------------------
+  // INITIAL PORTFOLIO STATE
+  // -----------------------------------------
+
+  updatePortfolio("all");
 
 }
 
