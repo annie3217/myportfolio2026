@@ -147,7 +147,7 @@ margin-bottom:40px;
 }
 
 .service-grid,
-.project-grid,{
+.project-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:25px;
