@@ -142,6 +142,10 @@ font-size:48px;
 margin-bottom:40px;
 }
 
+#about p {
+  margin-bottom: 1.5rem; /* Adjust value to increase or decrease spacing */
+}
+
 .service-grid,
 .project-grid{
 display:grid;
