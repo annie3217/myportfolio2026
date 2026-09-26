@@ -226,6 +226,7 @@ background:var(--gold);
 border-radius:50%;
 }
 
+
 /* Container layout for the Technical Stack group */
 .technical-grid {
   display: flex;
