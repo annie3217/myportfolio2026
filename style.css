@@ -239,9 +239,9 @@ border-radius:50%;
 
 /* Small card container for each icon */
 .technical-grid .project {
-  width: 100px;  /* Small fixed width */
-  height: 100px; /* Small fixed height */
-  padding: 8px; /* Padding around the image inside the card */
+  width: 140px;  /* Small fixed width */
+  height: 140px; /* Small fixed height */
+  padding: 12px; /* Padding around the image inside the card */
   display: flex;
   justify-content: center;
   align-items: center;
