@@ -147,8 +147,7 @@ margin-bottom:40px;
 }
 
 .service-grid,
-.project-grid,
-.technical-grid{
+.project-grid,{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:25px;
@@ -227,21 +226,36 @@ background:var(--gold);
 border-radius:50%;
 }
 
-.skill{
-margin-bottom:25px;
+/* Container layout for the Technical Stack group */
+.technical-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 15px; /* Spacing between icon cards */
+  max-width: 800px; /* Keeps the entire group compact in one area */
+  margin: 0 auto;
 }
 
-.bar{
-height:8px;
-background:#2b3038;
-border-radius:20px;
-overflow:hidden;
+/* Small card container for each icon */
+.technical-grid .project {
+  width: 70px;  /* Small fixed width */
+  height: 70px; /* Small fixed height */
+  padding: 8px; /* Padding around the image inside the card */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff; /* Clean background card */
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.bar span{
-display:block;
-height:100%;
-background:var(--gold);
+/* Ensures the full image is visible without cropping */
+.technical-grid .project img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Displays the FULL image without cutting off edges */
 }
 
 .contact{
