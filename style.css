@@ -238,7 +238,7 @@ border-radius:50%;
 }
 
 /* Small card container for each icon */
-.technical-grid .project {
+.technical-grid .skill {
   width: 140px;  /* Small fixed width */
   height: 140px; /* Small fixed height */
   padding: 12px; /* Padding around the image inside the card */
@@ -252,7 +252,7 @@ border-radius:50%;
 }
 
 /* Ensures the full image is visible without cropping */
-.technical-grid .project img {
+.technical-grid .skill img {
   width: 100%;
   height: 100%;
   object-fit: contain; /* Displays the FULL image without cutting off edges */
